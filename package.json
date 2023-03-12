@@ -1,0 +1,17 @@
+{
+  "name": "senmu",
+  "version": "2.0.0",
+  "description": "senmu blog",
+  "repository": "git@github.com:senmu-a/iBlog.git",
+  "author": "senmu <951967917@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vuepress dev .",
+    "start": "vuepress dev .",
+    "build": "vuepress build ."
+  },
+  "dependencies": {
+    "vuepress": "2.0.0-beta.60",
+    "vuepress-theme-reco": "2.0.0-beta.53"
+  }
+}
