@@ -13,7 +13,7 @@ export default defineUserConfig({
     // docsRepo: "https://github.com/vuepress-reco/vuepress-theme-reco-next",
     docsBranch: "main",
     docsDir: "example",
-    lastUpdatedText: "",
+    lastUpdatedText: "最近更新",
     autoSetSeries: true,
     // series 为原 sidebar
     series: {
