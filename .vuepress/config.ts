@@ -23,9 +23,17 @@ export default defineUserConfig({
           children: ["item1"],
         },
       ],
+      "/records/algorithm/": [
+        {
+          text: "数据结构",
+          children: ["data-struct", "linear-struct"]
+        }
+      ]
     },
     navbar: [
-      { text: "导航", icon: "Switcher", link: "/tags/tag1/1/" },
+      { text: "记录", children: [
+        { text: "算法", link: "/records/algorithm/data-struct" }
+      ] },
       {
         text: "翻译",
         children: [
