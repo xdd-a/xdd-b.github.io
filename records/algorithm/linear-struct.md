@@ -154,6 +154,254 @@ findNum(n1, 2)
 
 简单来讲就是叠盘子，想放下的盘子在下面想要拿到最下面的盘子必须先把上面的盘子拿下去。也就是我们常说的**先入后出**。
 
+### 数组实现栈：
+
+```ts
+// 比如，我们将 1、2、3、4 依次压入栈中
+const stack = []
+// 入栈
+stack.push(1) // 压入 1
+stack.push(2) // 压入 2
+stack.push(3) // 压入 3
+stack.push(4) // 压入 4
+
+// 出栈
+stack.pop() // 取出 4
+stack.pop() // 取出 3
+stack.pop() // 取出 2
+stack.pop() // 取出 1
+
+// 栈长度
+stack.length
+// 栈顶
+stack[stack.length - 1]
+// 栈底
+stack[0]
+
+// 换种形式：
+class ArrayStack {
+  // 栈数组
+  private stackArr: Array<number>
+
+  constructor() {
+    this.stackArr = []
+  }
+
+  get size() {
+    return this.stackArr.length
+  }
+
+  isEmpty() {
+    return this.size === 0
+  }
+
+  push(val: number) {
+    this.stackArr.push(val)
+  }
+
+  pop() {
+    if (this.isEmpty()) throw Error('栈为空')
+    return this.stackArr.pop()
+  }
+
+  top() {
+    if (this.isEmpty()) throw Error('栈为空')
+    return this.stackArr[this.size - 1]
+  }
+
+  toArray() {
+    return this.stackArr
+  }
+
+}
+```
+
+### 链表实现栈：
+
+```ts
+// 栈是先入后出，所以链表的头节点应该是栈顶，意味着数据压入栈时需要改变原先链表的指向
+class LinkedStack {
+  // 记录栈长度
+  private stackSize: number
+  // 链表节点
+  private stackNode: ListNode | null
+
+  constructor() {
+    this.stackNode = null
+    this.stackSize = 0
+  }
+
+  // 获取栈长度
+  get size() {
+    return this.stackSize
+  }
+
+  // 入栈
+  push(num: number) {
+    const node = new ListNode(num)
+    node.next = this.stackNode
+    this.stackNode = node
+    this.stackSize += 1
+  }
+  // 出栈
+  pop() {
+    const num = this.peek()
+    this.stackNode = this.stackNode.next
+    this.stackSize--
+    return num
+  }
+  // 访问栈顶元素
+  peek() {
+    if (!this.stackNode) throw Error("stack not found")
+    return this.stackNode.val
+  }
+  // 将链表转化为数组
+  toArray() {
+    const node = this.stackNode
+    const arr = new Array(this.stackSize)
+    for (let i = arr.length - 1; i >= 0; i--) {
+      arr[i] = node.val
+      node = node.next
+    }
+    return arr
+  }
+}
+```
+
 ## 队列
 
 队列在实际生活中也可以当作是排队买奶茶，先排的人先买后排的人后买。**先入先出**。
+
+从代码实现角度来看，队列和栈思路刚好相反，同样，我们分别用链表和数组实现下队列。
+
+### 数组实现队列
+
+```ts
+class ArrayQueue {
+  // 队列数组
+  private queueArr: Array<number>
+  // 队首指针
+  private front: number = 0
+  // 数组长度/队尾指针
+  private queueSize: number = 0
+
+  constructor(capacity: number) {
+    // 初始化固定长度的数组
+    this.queueArr = new Array(capacity)
+  }
+
+  // 获取数组容量
+  get capacity() {
+    return this.queueArr.length
+  }
+
+  // 获取数组队列长度
+  get size() {
+    return this.queueSize
+  }
+
+  // 队列是否为空
+  isEmpty() {
+    return this.size === 0
+  }
+
+  // 往队尾添加数据
+  push(val: number) {
+    if (this.size === this.capacity) {
+      throw Error('队列已满，稍等再添加～')
+    }
+    const rear = (this.front + this.size) % this.capacity
+    this.queueArr[rear] = val
+    this.queueSize++
+  }
+
+  pop() {
+    const num = this.peek()
+    this.front = (this.front + 1) % this.capacity
+    this.queueSize--
+    return num
+  }
+
+  peek() {
+    if (this.isEmpty()) throw Error('队列为空')
+    return this.queueArr[this.front]
+  }
+
+  toArray() {
+    const arr = new Array(this.size)
+    for (let i = 0, j = this.front; i < this.size; i++, j++) {
+      arr[i] = this.queueArr[j % this.capacity]
+    }
+    
+    return arr
+  }
+
+}
+```
+
+### 链表实现队列
+
+链表的空间要求不高反而只需要关心队列的逻辑就好（先进先出）。
+
+```ts
+class LinkQueue {
+  // 首节点
+  private front: ListNode | null
+  // 尾节点
+  private rear: ListNode | null
+  // 队列长度
+  private queueSize: number = 0
+
+  constructor() {
+    this.front = null
+    this.rear = null
+  }
+
+  get size() {
+    return this.queueSize
+  }
+
+  isEmpty() {
+    return this.size === 0
+  }
+
+  push(val: number) {
+    const node = new ListNode(val)
+    if (this.rear) {
+      // 如果存在尾节点，就将当前的尾节点的下个节点指向新的尾节点
+      this.rear.next = node
+    } else {
+      // 如果不存在尾节点，说明为空队列，则设置首节点
+      this.front = node
+    }
+    // 不管如何都更新尾节点
+    this.rear = node
+    this.queueSize++
+  }
+
+  pop() {
+    const head = this.peek()
+    this.front = head.next
+    this.queueSize--
+    return head.val
+  }
+
+  // 访问首元素
+  peek() {
+    if (this.isEmpty()) {
+      throw Error('队列为空，先添加数据进来吧～')
+    }
+    return this.front
+  }
+
+  toArray() {
+    let node = this.peek()
+    const arr = new Array(this.queueSize)
+    for (let i = 0; i < this.queueSize; i++) {
+      arr[i] = node.val
+      node = node.next
+    }
+    return arr
+  }
+}
+```
