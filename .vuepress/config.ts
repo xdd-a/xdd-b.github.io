@@ -28,23 +28,23 @@ export default defineUserConfig({
           text: "数据结构",
           children: ["data-struct", "linear-struct"]
         }
+      ],
+      "/docs/interview": [
+        {
+          text: "面试记录",
+          children: ["byteDance"]
+        }
       ]
     },
     navbar: [
       { text: "记录", children: [
-        { text: "算法", link: "/records/algorithm/data-struct" }
+        { text: "算法", link: "/records/algorithm/data-struct" },
+        { text: "面试", link: "/docs/interview/byteDance" }
       ] },
       {
         text: "翻译",
         children: [
           { text: "Effective TypeScript", link: "/docs/effective-typescript/chapter1/item1" },
-        ],
-      },
-      {
-        text: "文章",
-        children: [
-          { text: "vuepress-reco", link: "/docs/theme-reco/theme" },
-          { text: "vuepress-theme-reco", link: "/blogs/other/about" },
         ],
       },
       { text: "个人介绍", link: "/blogs/other/about" },
