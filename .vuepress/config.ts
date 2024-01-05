@@ -32,7 +32,7 @@ export default defineUserConfig({
       "/docs/interview": [
         {
           text: "面试记录",
-          children: ["byteDance"]
+          children: ["byteDance", "aboutReact", "reactHook"]
         }
       ]
     },
