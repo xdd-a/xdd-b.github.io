@@ -158,4 +158,31 @@ const [value, setValue] = useState(/**initValue*/)
 
 **重置数据小技巧**：给组件设置 `key`，并且传递 `state` 值给 `key`，在需要重置数据时改变 `key` 值。
 
+### useSyncExternalStore
 
+> React18 中新增的 hook，方便订阅外部数据源的变化。
+
+用法：`const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?)`
+
+### useTransition
+
+用法：`const [isPending, startTransition] = useTransition()`
+
+使用该 hook 不会阻断页面 UI，例如：https://code.juejin.cn/pen/7327947967090917385
+
+另外，它的执行顺序需要了解下，请看下面的例子：
+
+```tsx
+  const [isPending, startTransition] = useTransition()
+
+  console.log(1)
+
+  startTransition(() => {
+    console.log(2)
+    // do something
+  })
+
+  console.log(3)
+```
+
+它会按照 1、2、3 的顺序打印～
