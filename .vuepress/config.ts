@@ -39,7 +39,8 @@ export default defineUserConfig({
     navbar: [
       { text: "记录", children: [
         { text: "算法", link: "/records/algorithm/data-struct" },
-        { text: "面试", link: "/docs/interview/byteDance" }
+        { text: "面试", link: "/docs/interview/byteDance" },
+        { text: "React 深水区", link: "/docs/deeply/react-core" }
       ] },
       {
         text: "翻译",
