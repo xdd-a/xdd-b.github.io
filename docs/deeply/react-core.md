@@ -215,8 +215,11 @@ function App() {
 }
 ```
 
+它们解析为 Fiber 结构，如图：
 
-### 
+![fiber-node](../../.vuepress/public/fiber-node.jpg)
+
+### 完整的流程
 
 初始化渲染：
 
@@ -249,13 +252,13 @@ function App() {
   - 顺着上面构建的 `workInProgress` 来进行遍历
 
 * 走 `performUnitOfWork` 方法
-  - `beginWork`
-  - `completeUnitOfWork`
+  - `beginWork` 深度优先，完成第一个最深节点后进行 `completeUnitOfWork` 工作
+  - `completeUnitOfWork` 完成工作，遇到 sibling 需要继续返回 `beginWork` 工作
 
 * `commit` 阶段
 
 
-### beginWork 做了什么？
+#### `beginWork` 做了什么？
 
 调用 `beginWork` 时需要传入 `current`、`workInProgress`、`renderLanes` 这三个参数
 
@@ -293,20 +296,51 @@ function App() {
   - `reconcileChildren` 对应 `mountChildFibers(workInProgress, null, nextChildren, renderLanes);` 和 `reconcileChildFibers(workInProgress, current.child, nextChildren, renderLanes);` 渲染或者更新，参考上面的逻辑
 * 构建好下一个 `workInProgress`
 
-### `completeWork` 做了什么？
+流程图如下：
 
+![beginWork](../../.vuepress/public/beginWork.jpg)
 
+#### `completeUnitOfWork` 做了什么？
 
+* 先判断是否有更紧急任务（`workInProgress.flag` 为 `Incomplete`），如果没有进入当前节点的“`completeWork`（完成工作）”，如果有则要跳过
+* `completeWork` 阶段
+  - 同样判断节点的类型（`workInProgress.tag`）
+  - 判断是 update 还是 mount，进入不同逻辑
+  - 如果是 mount 的话，则会创建实例，并且将节点插入构成 Fiber 树，等待 `commit` 阶段渲染为真实 DOM
+  ```js
+    var _rootContainerInstance = getRootHostContainer();
+    var instance = createInstance(_type, newProps, _rootContainerInstance, _currentHostContext, workInProgress);
+    appendAllChildren(instance, workInProgress, false, false);
+    workInProgress.stateNode = instance;
+  ```
+  - 如果是 update 的话，则会生成 `updatePayload`，并且赋值 `workInProgress.updateQueue = updatePayload`（这部分是处理`onClick`、`style prop`、`DANGEROUSLY_SET_INNER_HTML prop`、`children prop`）
+  - 最后 `bubbleProperties(workInProgress)`
+* 判断当前节点是否存在 sibling 节点，如果有的话要继续进入 sibling 节点的 `beginWork` 工作
+
+流程图如下：
+
+![completeUnitOfWork](../../.vuepress/public/completeWork.jpg)
+
+#### `commit` 阶段做了什么？
+
+* `rootDoesHavePassiveEffects` 存在就执行 `flushPassiveEffects()`
+* `commitBeforeMutationEffects()` before mutation 阶段
+* `commitMutationEffects()` mutation 阶段，主要是渲染真实 DOM
+* `commitLayoutEffects()` layout 阶段，执行 layout Effect
+* `onCommitRoot()` ？？
 
 疑问：
 
 1. 如何构建 `workInProgress` ===> 调用 `createWorkInProgress()` 方法
   - `workInProgress.alternate = current;` 缓存该节点（第一次渲染时会缓存根节点）
 2. 谁去调用 `workLoopSync`，为什么会执行两次 ===> 错❌，并没有调用两次；只是内部执行 `var children = Component(props, secondArg);`。
-3. `alternate` 字段什么含义？
-4. `beginWork()` 做了什么？
+3. `alternate` 字段什么含义？相当于节点的缓存 ✅
+4. `beginWork()` 做了什么？✅
 5. 初次渲染时进入 `beginWork` 会进入 `update` 逻辑，这是因为在创建 `workInProgress` 时缓存了根节点
-5. `reconcileChildren()` 做了什么？（协调算法，初次渲染直接 mount 全部，更新时需要研究 diff 算法）
+6. `reconcileChildren()` 做了什么？（协调算法，初次渲染直接 mount 全部，更新时需要研究 diff 算法）
+7. `rootDoesHavePassiveEffects` 这个变量什么时候赋值的？执行 Effect 之前会判断是否有正在进行的 Effect
+8. `onCommitRoot()` 做了什么？
+
 
 收获点：
 
