@@ -1,7 +1,7 @@
 ---
 title: React 相关面试题
 date: 2023/12/14
-author: senmu
+author: xdd
 ---
 
 ### 使用 Hook 实现 `componentWillMount`

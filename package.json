@@ -1,9 +1,9 @@
 {
-  "name": "senmu",
+  "name": "xdd",
   "version": "2.0.0",
-  "description": "senmu blog",
-  "repository": "git@github.com:senmu-a/iBlog.git",
-  "author": "senmu <951967917@qq.com>",
+  "description": "xdd blog",
+  "repository": "git@github.com:xdd-b/iBlog.git",
+  "author": "xdd <122866660@qq.com>",
   "license": "MIT",
   "scripts": {
     "dev": "vuepress dev .",

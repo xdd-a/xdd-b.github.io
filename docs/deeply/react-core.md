@@ -1,7 +1,7 @@
 ---
 title: React 底层架构
 date: 2023/12/21
-author: senmu
+author: xdd
 ---
 
 ## 前言
@@ -208,7 +208,7 @@ function App() {
     <div>
       <p>你好</p>
       <div>
-        <p>senmu</p>
+        <p>xdd</p>
       </div>
     </div>
   )
@@ -350,10 +350,10 @@ function App() {
 ```js
 loop1: do {
   switch(name) {
-    case 'senmu':
+    case 'xdd':
       // do something
       break loop1; // 可以直接退出 do...while 循环
-    case 'SenMu':
+    case 'xdd':
       // do something
       break; // 只能退出 switch 语句
   }

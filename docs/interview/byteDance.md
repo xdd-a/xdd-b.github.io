@@ -1,7 +1,7 @@
 ---
 title: 面经
 date: 2023/11/14
-author: senmu
+author: xdd
 ---
 
 ### `useEffect` 执行顺序，看下面例子

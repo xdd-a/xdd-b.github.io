@@ -1,18 +1,18 @@
 ---
 title: 条目 1 ：理解 TypeScript 和 JavaScript 的关系
 date: 2023/03/13
-author: senmu
+author: xdd
 ---
 
 如果你使用 TypeScript 很长时间的话，你一定听说过“TypeScript 是 JavaScript 的超集”或者说“TypeScript 是 JavaScript 的类型超集”。但是你真的知道这是什么意思吗？那么到底 TypeScript 和 JavaScript 的关系是什么？
 
 由于这些语言密切相关，因此深入了解它们与每种语言的关系是很好使用 TypeScript 的基础。
 
-在语法意义上，TypeScript 是 JavaScript 的超集；只要你的 JavaScript 程序没有任何语法错误，那么它也是一个 TypeScript 程序。TypeScript 的类型检查器很可能会标记代码的一些问题。但是这是一个独立的问题。TypeScript 仍然会解析你的代码并且产出 JavaScript。（关于 TypeScript 与 JavaScript 另一部分的关键点，我们将在[条目 3](https://www.yuque.com/senmua/ge8hhi/zlfgb79me4quzi6v) 中探索。）
+在语法意义上，TypeScript 是 JavaScript 的超集；只要你的 JavaScript 程序没有任何语法错误，那么它也是一个 TypeScript 程序。TypeScript 的类型检查器很可能会标记代码的一些问题。但是这是一个独立的问题。TypeScript 仍然会解析你的代码并且产出 JavaScript。（关于 TypeScript 与 JavaScript 另一部分的关键点，我们将在[条目 3](https://www.yuque.com/xdda/ge8hhi/zlfgb79me4quzi6v) 中探索。）
 
 TypeScript 文件使用 `.ts` 或者 `.tsx` 作为后缀，而 JavaScript 文件使用 `.js` 或者 `.jsx` 作为后缀。当然，这并不意味着 TypeScript 是一种完全不同的语言！由于 TypeScript 是 JavaScript 的超集，因此 `.js` 文件中的代码已经是 TypeScript。将 `main.js` 重命名为 `main.ts` 不会改变这一点。
-如果你要将现有的 js 代码库迁移到 ts，这将会非常有用。这意味着你不必用另一种语言重写任何代码就可以开始使用 TypeScript 并获得它提供的好处。如果你选择用 Java 等语言重写 JavaScript，情况并非如此。这种平缓的迁移路径是 TypeScript 的最佳特性之一。更多内容在[第 8 章](https://www.yuque.com/senmua/ge8hhi/eymgsd800ogy0bgf)中寻找。
-可以这样说，**所有的 JavaScript 程序都是 TypeScript 程序，所有的 TypeScript 程序并非是 JavaScript 程序。**这是因为 TypeScript 添加了额外的语法来指定类型。（它添加了一些其他语法，主要是出于历史原因。参见[条目 53](https://www.yuque.com/senmua/ge8hhi/ta7tgb0209ovwbe3)。）
+如果你要将现有的 js 代码库迁移到 ts，这将会非常有用。这意味着你不必用另一种语言重写任何代码就可以开始使用 TypeScript 并获得它提供的好处。如果你选择用 Java 等语言重写 JavaScript，情况并非如此。这种平缓的迁移路径是 TypeScript 的最佳特性之一。更多内容在[第 8 章](https://www.yuque.com/xdda/ge8hhi/eymgsd800ogy0bgf)中寻找。
+可以这样说，**所有的 JavaScript 程序都是 TypeScript 程序，所有的 TypeScript 程序并非是 JavaScript 程序。**这是因为 TypeScript 添加了额外的语法来指定类型。（它添加了一些其他语法，主要是出于历史原因。参见[条目 53](https://www.yuque.com/xdda/ge8hhi/ta7tgb0209ovwbe3)。）
 例如，这是一个有效的 TypeScript 程序：
 ```typescript
 function greet(who: string) {
@@ -44,7 +44,7 @@ console.log(city.toUppercase());
                // ~~~~~~~~~~~ Property 'toUppercase' does not exist on type
                //             'string'. Did you mean 'toUpperCase'?
 ```
-你不必告诉 TypeScript city 的类型是 `string:` 它是从初始值推断出来的。类型推断是 TypeScript 的关键部分，[第 3 章](https://www.yuque.com/senmua/ge8hhi/rh25hgsx658bezyk)探讨了如何很好地使用它。
+你不必告诉 TypeScript city 的类型是 `string:` 它是从初始值推断出来的。类型推断是 TypeScript 的关键部分，[第 3 章](https://www.yuque.com/xdda/ge8hhi/rh25hgsx658bezyk)探讨了如何很好地使用它。
 TypeScript 类型系统的目标之一是检测将在运行时抛出异常的代码，而无需运行代码。当你听到 TypeScript 被描述为“静态”类型系统时，它指的就是这个。类型检查器不能总是发现会抛出异常的代码，但它会尝试。
 即使你的代码没有抛出异常，它仍然可能不会按照您的意图进行。TypeScript 也试图捕捉其中的一些问题。例如，这个 JavaScript 程序：
 ```javascript
@@ -146,7 +146,7 @@ console.log(names[2].toUpperCase());
 当你运行时，它会抛出：
     TypeError: Cannot read property 'toUpperCase' of undefined
 TypeScript 假设数组访问会在边界内，但它不是。结果是意料之外的。
-当你使用 any 类型时，也经常会出现未捕获的错误，我们将在[条目 5](https://www.yuque.com/senmua/ge8hhi/my56ulylxa8351ga) 和[第 5 章](https://www.yuque.com/senmua/ge8hhi/khe0gdfhz2y73v4g)中更详细地讨论这些错误。
+当你使用 any 类型时，也经常会出现未捕获的错误，我们将在[条目 5](https://www.yuque.com/xdda/ge8hhi/my56ulylxa8351ga) 和[第 5 章](https://www.yuque.com/xdda/ge8hhi/khe0gdfhz2y73v4g)中更详细地讨论这些错误。
 这些异常的根本原因是 TypeScript 对值类型和现实的理解存在分歧。一个可以保证其静态类型准确性的类型系统被称为健全的。TypeScript 的类型系统非常不健全，也从未打算如此。如果稳固对你很重要，你可能想看看其他语言，比如 Reason 或 Elm。虽然这些确实为运行时安全提供了更多保证，但这是有代价的：不是 JavaScript 的超集，因此迁移将更加复杂。
 ## 值得注意的事情
 

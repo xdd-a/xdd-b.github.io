@@ -1,7 +1,7 @@
 ---
 title: 数据结构
 date: 2023/10/17
-author: senmu
+author: xdd
 ---
 
 ## 什么是数据结构？

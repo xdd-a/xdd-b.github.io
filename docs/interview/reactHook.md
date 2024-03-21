@@ -1,7 +1,7 @@
 ---
 title: React 相关 Hook
 date: 2023/12/21
-author: senmu
+author: xdd
 ---
 
 ### useCallback
@@ -52,7 +52,7 @@ useEffect(() => {
 
 ```tsx
 // 切换 person state 来请求最新数据
-const [person, setPerson] = useState('senmu')
+const [person, setPerson] = useState('xdd')
 const [list, setList] = useState()
 
 // 使用 .then 方式
