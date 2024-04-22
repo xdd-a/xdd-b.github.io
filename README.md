@@ -15,7 +15,7 @@ bannerBrand:
     - { text: 关于我, link: '/blogs/other/about', type: 'plain' }
 blog:
   socialLinks:
-    - { icon: 'LogoGithub', link: 'https://github.com/xdd-a' }
+    - { icon: 'LogoGithub', link: 'https://github.com/xdd-b' }
 isShowTitleInHome: true
 actionText: About
 actionLink: /views/other/about
