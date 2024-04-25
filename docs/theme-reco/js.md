@@ -204,3 +204,148 @@ set // [1,2,3,4]
 
 ```
 - set 添加值的时候 是通过 === 来比较的，他不会进行类型转换。NaN 除外， set认为他是相等的。
+
+
+## Module 语法
+```js
+// 运行时加载，只有运行时才能得到fs对象，没有办法在编译时做静态优化
+// 会加载fs整个模块
+const { stat, exists } = require('fs') // commonJS 模块
+// 等同于
+const fs = require('fs')
+const stat = fs.stat
+const exists  = fs.exists
+
+// 从fs模块上加载2个方法 其他不加载。
+// 在编译时就加载了，比commonJS 要快
+import { stat, exists}  from 'fs' 
+```
+- export 必须提供对外的接口，不能直接输出值。
+```js
+
+export 1
+
+var m = 1
+export m 
+// 以上两种方式都会报错，
+
+// 正确的写法
+export default m
+export { m }
+
+```
+
+- import 命令 输入的变量都是只读的，因此无法更改他，但是如果 输入的变量是一个对象的话 那么更改他是合法的
+```js
+import {a} from './test'
+a = {}  // 报错
+
+a.foo = 1 // 正确
+```
+
+- import 具有提升效果，会提升到整个模块的最顶部。
+- import 是静态执行的，因此无法进行表达式与变量操作，这些只能在运行时的才能得到结果的操作是不被允许的
+```js
+import {'f' + 'po'}  from 'a'
+
+var module = 'test'
+import {a} from module
+
+if(true){
+    import {a} from 'test'
+}else{
+    import {b} from 'test'
+}
+// 以上操作都是不被允许的，会报错。
+```
+
+- export default 本质就是输出一个叫做 `default` 的变量，所以他后面不能跟变量声明语句
+```js
+// good
+var a = 1
+export default  a;
+
+export var a = 1;
+
+export default 43
+
+// bad
+export default var a = 1;
+export 43
+```
+
+- import() 可以进行动态的加载，什么时候执行到他，就什么时候加载,他返回的是一个promise对象
+```js
+import("/test.js").then(module=>{
+    module.xxx
+}).catch(err=>{
+    xxx = err.msg;
+})
+
+
+```
+
+## ES6 模块 与 CommonJS 模块的区别
+- CommonJS 模块 输出的是一个值的拷贝， ES6 模块输出的是值的引用
+    - CommonJS 一旦输出了这个值，模块内部的变化，不会影响到这个值。
+    - 加载了一个原始类型的值，会被缓存，除非写成函数形式，才可以得到修改后的值。
+```js
+// lib.js
+var count  = 0;
+function setCount(){
+    return count++;
+}
+
+module.exports = {
+    count,
+    setCount,
+    get getCount(){
+        return count
+    }
+}
+
+
+// main.js
+var md = require('lib.js')
+md.count // 0
+md.setCount() 
+md.count // 0
+md.getCount() // 1
+
+```
+    - ES6 模块 遇到 `import` 时，就会生成一个只读的引用，到脚本真正执行的时候，会去被加载的模块中获取值。
+    - 因此 ES6 是动态引用的，不会被缓存。
+    - 所以，ES6 模块， 如果对变量进行重新赋值的话，是会报错的，因为地址是只读的不可更改。
+```js
+export var count  = 0;
+export function setCount(){
+    return count++;
+}
+
+
+// main.js
+import { count, setCount} from 'lib.js'
+count // 0
+setCount() 
+count // 1
+
+```
+- CommonJS 模块 是运行时加载，ES6 模块是编译时输出接口
+- CommonJS 模块的 `require()` 是同步加载模块， ES6 模块的 `import` 是异步加载，有一个独立的模块依赖的解析阶段。
+- CommonJS 模块想要加载ES6模块
+```js
+(async ()=>{
+    await import("test.mjs")
+})()
+
+```
+- ES6 模块 加载 CommonJS 模块，只能整体加载，不能加载单一项。
+  - 因为 ES6 需要支持静态代码分析，而 CommonJS 模块 输出的是一个对象，无法被静态分析，所以只能整体加载。
+```js
+// good
+import test from 'test'
+
+// bad
+import {test } from 'test'
+
+```
