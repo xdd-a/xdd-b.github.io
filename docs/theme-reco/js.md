@@ -353,3 +353,60 @@ import {test } from 'test'
 
 ## sessionStorage 可以在多个标签页共享数据吗？
 - sessionStorage 不可以在多个标签页共享数据，但是如果是用过 `window.open` 打开的标签页且不是 `__blank` 的时候，他会复制一份 sessionStorage 到新的页面。
+
+
+## Promise面试题
+- 当调用promise的then方法的时候 会做两件事情，
+  - 1、如果promise 是已完成的状态，那么then的回调函数会被推入微队列。
+  - 2、看是不是会返回一个新的promise，返回的promise 是什么状态，取决于回调函数的运行过程，如果回调函数运行过程没有报错，那就是 `fulfilled` 完成，反之 `rejected`失败
+- 当 then方法中 返回了一个promise的时候，then的状态取决于 返回的这个promise的状态。
+  - 如何保持状态一致呢？
+    - 1、他把保持状态一致的事情，放到一个then里面，然后将这个then推入微队列
+
+- 1、p0因为是resolve 已完成的状态，所以将 then 推入微队列
+    - 微队列有`p0`
+- 2、res 因为 前一个p0 还没有执行完成，还是 pending 状态 所以先不管 res
+- 3、p1 因为是resolve 已完成的状态，所以将then 推入微队列
+  - 微队列有`p0`、`p1`
+- 4、后续不管，因为p1 状态是 pending
+- 5、微队列中取出p0，因为返回了一个 promise 所以p0的状态取决于 返回的promise 并且 将其放入then中 也就是 p4.then(()=>完成p0) 
+  - 打印0
+  - 微队列中有 `p1`、 `p4.then(()=>完成p0)`
+- 6、因为p0还是pending 所以 res 还不管， 接下来取出p1，p1执行完成之后状态变为已完成，将p2推入微队列
+  - 打印1
+  - 微队列中有 `p4.then(()=>完成p0)`、`p2`
+- 7、取出 `p4.then(()=>完成p0)` p4状态是resolve，将`完成p0` 推入微队列
+  - 微队列有 `p2`、`完成p0`
+- 8、 取出`p2`，执行完成之后状态变为已完成，将p3推入微队列
+  - 打印2
+  - 微队列有 `完成p0`、`p3`
+- 9、取出 `完成p0`, p0执行完成，将 `res` 推入微队列
+  - 微队列中有 `p3`、`res`
+- 10、取出 `p3`，p3执行完成之后状态变为已完成,将p5推入微队列
+  - 打印3
+  - 微队列中有 `res`、`p5`
+- 11、取出`res`
+  - 打印 4
+  - 微队列中有 `p5`
+- 12、 取出p5
+  - 打印 5
+- 最终打印顺序为 0、1、2、3、4、5
+```js
+Promise.resolve().then(()=>{
+    console.log(0)
+    return Promise.resolve(4)
+}).then(res=>{
+    console.log(res)
+})
+
+
+Promise.resolve().then(()=>{
+    console.log(1)
+}).then(()=>{
+    console.log(2)
+}).then(()=>{
+    console.log(3)
+}).then(()=>{
+    console.log(5)
+})
+```

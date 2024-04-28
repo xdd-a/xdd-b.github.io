@@ -482,11 +482,12 @@ for(var k of obj) {
 
 ### promise
 - 状态只能修改一次，由pending改为fulfilled 或者由pending改为rejected
-- Promise.all：所有都成功就返回所有的resolve， 有一个失败，就reject
-- Promise.any：只要有一个成功就返回成功的，不会被失败的影响
+- Promise.all：所有都成功就返回所有的resolve， 有一个失败，就reject，reject的内容会在catch中捕获。
+- Promise.any：只要有一个成功就返回成功的，不会被失败的影响，所有的都失败的话 在catch中捕获。
 - Promise.race：谁先执行完成就返回谁，不论成功失败
 - then：可以链式调用，下一个then的参数是上一个then的返回值
 - finally：不论执行成功或者失败都会走的一个回调函数
+
 
 ### map set workmap weakkset
 
