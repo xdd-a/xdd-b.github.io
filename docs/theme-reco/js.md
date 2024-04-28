@@ -349,3 +349,7 @@ import test from 'test'
 import {test } from 'test'
 
 ```
+
+
+## sessionStorage 可以在多个标签页共享数据吗？
+- sessionStorage 不可以在多个标签页共享数据，但是如果是用过 `window.open` 打开的标签页且不是 `__blank` 的时候，他会复制一份 sessionStorage 到新的页面。

@@ -26,7 +26,7 @@ export default defineUserConfig({
       "/records/algorithm/": [
         {
           text: "react",
-          children: ['react-source', "react-hook"]
+          children: ['react-source', "react-hook", "react-fiber"]
         }
       ]
     },

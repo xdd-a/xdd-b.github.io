@@ -127,3 +127,78 @@ export default function demo(){
     }
 
 ```
+
+
+## class 与 hooks 有什么区别
+- hooks 能够更好的逻辑复用
+:::: code-group
+::: code-group-item 类组件
+```js
+class Counter1 extends React.Component {
+  state = {
+    count : 0
+  }
+
+  increment = () => {
+    this.setState(preCount => preCount + 1);
+  }
+
+
+  render(){
+    return (
+      <div>
+      {this.state.count};
+      <button onClick={this.increment}>increment</button>
+      </div>
+    )
+  }
+}
+
+class Counter2 extends React.Component {
+  state = {
+    count : 0
+  }
+
+  increment = () => {
+    this.setState(preCount => preCount + 1);
+  }
+
+
+  render(){
+    return (
+      <div>
+      {this.state.count};
+      <button onClick={this.increment}>increment</button>
+      </div>
+    )
+  }
+}
+```
+:::
+
+::: code-group-item 函数组件
+```js
+function useCounter(){
+  const [count,setCount] = useState(0);
+
+  const increment = () => {
+    setCount(preCount => preCount + 1);
+  }
+
+  return {count, increment}
+}
+function Counter(){
+  const {count,increment} = useCounter();
+  
+  return (
+     <div>
+      {count};
+      <button onClick={increment}>increment</button>
+      </div>
+  )
+}
+```
+:::
+::::
+- 生命周期优化，useEffect 可以代表 `componentDidMount` 、`componentDidUpdate` 、 `componentWillUnmount`
+- 性能优化， 可以使用 `useMemo`、`useCallback`
