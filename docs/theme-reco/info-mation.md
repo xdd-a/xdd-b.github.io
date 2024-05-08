@@ -11,8 +11,8 @@ date: 2024/03/20
 
 ```js
 react: "4.0.3"; // 就安装4.0.3
-react: "~4.0.3"; // 4.0.x不低于4.0.3版本
-react: "^4.0.3"; // 4.x.x 不低于4.0.3版本
+react: "~4.0.3"; // 4.0.x不低于4.0.3版本 比如现在最高的版本更新到了4.1.1 那么我们会安装的版本就是4.0.9
+react: "^4.0.3"; // 4.x.x 不低于4.0.3版本 比如现在最高的版本更新到了4.1.1 那么我们会安装的版本就是4.1.1
 ```
 
 ### 并发控制
@@ -59,7 +59,9 @@ class SuperTask {
   }
   _run() {
     // 判断是否可以执行
-    while (this.runCount < this.pCount && this.questList.length) {
+    if(this.runCount >= this.pCount || this.questList.length <= 0){
+      return 
+    }
       const { task, resolve, reject } = this.questList.shift();
       this.runCount++;
       task()
@@ -68,7 +70,6 @@ class SuperTask {
           this.runCount--;
           this._run();
         });
-    }
   }
 }
 
@@ -111,8 +112,8 @@ window.addEventListener(
 
 ## em rem
 
-- em：如果设置字体大小，则 1em=字体大小 否则 1em=16px，会继承父元素字体大小
-- rem: 1rem=100px 相对于根元素 html
+- em：如果设置字体大小，则 1em=字体大小 否则 `1em = 16px`，会继承父元素字体大小
+- rem: 相对于根元素 html，默认情况下字体大小是 `16px` 所以 没设置 `font-size` 时，`1rem = 16px`
 
 ## HTML5
 
@@ -149,10 +150,11 @@ window.addEventListener(
 - cookies 可以设置过期时间，没有设置默认为浏览器关闭失效，存储大小 `4kb左右`
 - sessionStorage 当前页面有效，关闭页面或浏览器时失效 存储大小 `5MB`
 - localStorage 永久有效，除非手动删除 存储大小 `5MB`
+- sessionStorage 不可以在多个标签页共享数据，但是如果是用过 `window.open` 打开的标签页且不是 `__blank` 的时候，他会复制一份 sessionStorage 到新的页面。
 
 ### 强缓存 协商缓存
 
-- 基本原理：在浏览器加载资源的时候，会根据请求头`expires`和`cache-control`来判断是否命中强缓存策略，如果命中的话则去服务器取资源否则去浏览器取资源
+- 基本原理：在浏览器加载资源的时候，会根据请求头`expires`和`cache-control`来判断是否命中强缓存策略，如果命中的话则去服务器取资源，否则，浏览器会向服务器发送一个请求，通过 `last-modified` 和 `etag` 来验证是否命中协商缓存，如果命中了协商缓存，则直接返回当前请求，使用浏览器缓存，如果没有命中协商缓存，正则服务器加载资源
 
 - 强缓存
 
@@ -199,13 +201,26 @@ window.addEventListener(
 
 ### 从 url 到页面渲染完成 做了什么
 
-- URL 解析，检查 URL 格式，协议，主机等，确定要访问的地址。
+- URL 解析，确定输入的协议（http or https）、域名、端口、资源等。
 - DNS 解析，浏览器会向本地 DNS 服务器请求解析出该站点 IP 地址
-- 建立链接，TCP 三次握手
+- 建立链接，浏览器与服务器建立 TCP 连接， 如果请求是 HTTPS的话 还会进行 TLS 握手
+  - TLS 加密协议是 ssl 协议的后继版本，在传输过程中通过加密数据，保证数据在两个系统之间传输时的隐私性和安全性，从而防止窃听和篡改。
+    - 1、先握手建立安全连接
+    - 2、记录协议
+    - 3、数据传输
+    - 4、连接结束
 - 发送请求，浏览器向服务器发送请求
 - 服务器处理请求，服务器收到请求后，根据请求的内容进行处理，确定要返回的资源。
 - 返回响应，服务器将处理好的 http 报文返回给浏览器
-- 浏览器渲染，浏览器拿到响应后,解析后，渲染到页面上。
+- 处理 HTML，解析 html 构建 dom 树
+- 处理 CSS： 解析 css 文件 和 style 标签，构建 cssom 树
+- 执行 JavaScript：加载 script 标签的内容并执行
+- 构建渲染树：结合 dom cssom 合并成渲染树
+- 布局：浏览器计算每个节点中的渲染树大小与位置。
+- 绘制：浏览器将渲染树中每个节点转换成真实像素
+- 合成：如果页面有多层，浏览器将他们合成成最终屏幕图像
+- 加载子资源：在解析html的时候，浏览器会加载其他 font 图标 等资源。
+  
 
 ### get post
 
@@ -237,6 +252,9 @@ window.addEventListener(
 - 不要使用 table，一个小的改动可能会造成整个 table 重新布局
 - 不要频繁的修改样式，应该放到一个 class 下一起修改
 - 可以先将元素`display：none` 修改完成在 显示，
+- 使用 `transform` 属性实现动画，不会触发回流重绘
+  - 因为 `transform` 的元素被浏览器提升为复合图层，元素的变化可以运行在 GPU 上，而不是 cpu，因为GPU 处理这些变化，不需要修改 dom树 和css 树，也不需要重新布局，所以他不会造成重绘和重排
+  - 但是 如果元素有很复杂的内容，或者他们的变化会导致与其他元素的重叠，浏览器还是会进行重绘。
 
 # JS
 

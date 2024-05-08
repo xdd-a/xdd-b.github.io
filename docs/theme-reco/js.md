@@ -349,6 +349,7 @@ import test from 'test'
 import {test } from 'test'
 
 ```
+- CommonJS & AMD 模块都是运行时，，ES6 是编译时就能确定要输出，输入的变量等
 
 
 ## sessionStorage 可以在多个标签页共享数据吗？
@@ -410,3 +411,35 @@ Promise.resolve().then(()=>{
     console.log(5)
 })
 ```
+
+
+## class 基础知识
+- static 声明的变量和方法 属于静态的，只能被类调用，不能被实例调用，实例调用会报错。
+- class 内部 可以通过 get  set 关键字，来给字段的读写增加拦截
+- 私有属性，只能在类的内部使用，外部无法使用，通过#来定义 例如: this.#count = 0;
+- 父类的所有方法都会被子类继承，除了私有属性和方法，子类调用的话会报错。
+- super 关键字可以做为方法，表示调用父类的构造函数，也可以作为对象，在普通方法中指向父类的原型，在静态方法中，指向父类
+```js
+
+class Parent {
+    p(){
+        return 1
+    }
+}
+
+class Child extends Parent {
+    constructor(){
+        super()
+        console.log(super.p(),'父类的p')
+        console.log(super.prototype,'父类') // undefined
+    }
+
+    static test(){
+        console.log(super.prototype) // {p:f}
+    }
+}
+
+
+```
+
+

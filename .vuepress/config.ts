@@ -20,7 +20,7 @@ export default defineUserConfig({
       "/docs/theme-reco/": [
         {
           text: "知识点总结",
-          children: ["info-mation", "short-message", "desgin-pattern", "data-structure", "learn-notes", "axios", "cli", "dayjs", "inquirer", "js", "nginx"]
+          children: ["info-mation", "short-message", "desgin-pattern", "data-structure", "learn-notes", "axios", "cli", "dayjs", "inquirer", "js", "nginx","ast"]
         },
       ],
       "/records/algorithm/": [
