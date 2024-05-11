@@ -6,7 +6,7 @@ date: 2024-03-20
 ## 数组 API
 - splice 会修改原数组
 - map 不会修改原数组 返回一个新数组
-- reduce 累加
+- reduce 累加，返回的是一个值。
 - some 一个命中规则 则返回true
 - every 每个都命中 返回true 
 - filter 过滤出符合条件的项 不会修改原数组
@@ -43,9 +43,9 @@ c + 1 // 34
 :::: code-group
 ::: code-group-item 变量提升
 ```js
-- 变量提升
-  - var、const、let 都有变量提升，只是他们提升的方式不同
-    - var 会将声明提升到当前作用域的最顶端
+// - 变量提升
+//   - var、const、let 都有变量提升，只是他们提升的方式不同
+//     - var 会将声明提升到当前作用域的最顶端
 
 - 例子1
 var name = "JavaScript"
@@ -442,4 +442,6 @@ class Child extends Parent {
 
 ```
 
-
+##  instanceof typeof 有什麼區別
+- instanceof 只能比较对象，判断依据是原型链查找
+- typeof 将 `null`、`Object`、`Array`、`promise`等都看做 `object`

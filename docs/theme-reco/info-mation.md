@@ -251,7 +251,6 @@ window.addEventListener(
 - 避免使用 css 表达式
 - 不要使用 table，一个小的改动可能会造成整个 table 重新布局
 - 不要频繁的修改样式，应该放到一个 class 下一起修改
-- 可以先将元素`display：none` 修改完成在 显示，
 - 使用 `transform` 属性实现动画，不会触发回流重绘
   - 因为 `transform` 的元素被浏览器提升为复合图层，元素的变化可以运行在 GPU 上，而不是 cpu，因为GPU 处理这些变化，不需要修改 dom树 和css 树，也不需要重新布局，所以他不会造成重绘和重排
   - 但是 如果元素有很复杂的内容，或者他们的变化会导致与其他元素的重叠，浏览器还是会进行重绘。
@@ -461,6 +460,17 @@ console.log(hl.next()); // {value:hello,done:false}
 console.log(hl.next()); // {value:word,done:false}
 区别：console.log(hl.next());// {value:ending,done:false}
 ```
+- yield* 调用一个 generator 函数，如果函数 有return语句，则可以返回数据
+```js
+function* foo(){
+  yield 1
+  return 3
+  yield 2
+}
+
+var gen = yield* foo();
+gen // 3
+```
 
 
 ### iterator
@@ -618,6 +628,7 @@ function deepClone(obj){
     if(typeof value !=='object'||value === null) return  value 
     if(map.has(value)) return map.get(value)
     let result = Array.isArray(value)?[]:{}
+    // 解决循环引用的问题。
     map.set(value,result)
     for(let k in value){
       result[k] = _deepClone(value[k])
@@ -879,7 +890,7 @@ Function.prototype.newCall = function (context) {
   if (typeof this !== "function")
     throw new TypeError(this + " is not function");
   let args = [...arguments].slice(1);
-  context = context || window;
+  context = context !== null && content !== undefined ? globalThis : window;
   context.fn = this;
   let results = context.fn(...args);
   delete context.fn;
@@ -889,7 +900,7 @@ Function.prototype.newCall = function (context) {
 Function.prototype.newApply = function (context, args) {
   if (typeof this !== "function")
     throw new TypeError(this + " is not function");
-  context = context || window;
+  context = context !== null && content !== undefined ? globalThis : window;
   context.fn = this;
   let results = args ? context.fn(...args) : context.fn();
   delete context.fn;
@@ -912,20 +923,19 @@ Function.prototype.newApply = function (context, args) {
   //fc.prototype.constructore = that
  // return fc
 //};
- Function.prototype.newBind = function (context) {
-        if (typeof this !== "function")
-            throw new TypeError(this + " is not function");
-        let args = [...arguments].slice(1);
-        context = context || window;
-        let that = this;
-        function bound() {
-            let boundArgs = [...arguments]
-            let finalArgs = args.concat(boundArgs)
-            that.apply(this instanceof bound ? this : context, [...finalArgs])
-        }
-        bound.prototype = this.prototype
-        return bound
-    };
+Function.prototype.MyBind = function(content,...agrs){
+  if(typeof this !=='function') throw new TypeError('必须是函数');
+  const fn = this;
+  function bound(...arg){
+    const subarg = [...agrs,...arg]
+    if(new.target){
+      return new fn(...subarg)
+    }
+   return fn.apply(content,subarg)
+  }
+  
+  return bound
+}
 ```
 
 # 字节面试题
